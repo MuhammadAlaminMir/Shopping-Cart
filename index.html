@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Shopping Cart</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
+            rel="stylesheet"
+        />
+        <link href="style.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <section>
+            <div class="container">
+                <div id="full-cart" class="cart">
+                    <div class="col-md-12 col-lg-10 mx-auto">
+                        <div id="phone-cart" class="cart-item">
+                            <div class="row">
+                                <div class="col-md-7 center-item">
+                                    <img src="images/product-1.png" alt="" />
+                                    <h5>iPhone 11 128GB Black</h5>
+                                </div>
+
+                                <div class="col-md-5 center-item">
+                                    <div class="input-group number-spinner">
+                                        <button
+                                            class="btn btn-default"
+                                            onclick="productCountHandler('phone',false)"
+                                        >
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input
+                                            id="phone-quantity"
+                                            type="text"
+                                            class="form-control text-center"
+                                            value="0"
+                                        />
+                                        <button
+                                            class="btn btn-default"
+                                            onclick="productCountHandler('phone',true)"
+                                        >
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <h5 id="phone-price">$ 00</h5>
+                                    <img
+                                        onclick="removeItem('phone-cart')"
+                                        src="images/remove.png"
+                                        alt=""
+                                        class="remove-item"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="case-cart" class="cart-item">
+                            <div class="row">
+                                <div class="col-md-7 center-item mx-auto">
+                                    <img src="images/product-2.png" alt="" />
+                                    <h5>iPhone 11 Silicone Case - Black</h5>
+                                </div>
+                                <div class="col-md-5 center-item">
+                                    <div class="input-group number-spinner">
+                                        <button
+                                            class="btn btn-default"
+                                            id="case-decrease"
+                                            onclick="productCountHandler('case',false,)"
+                                        >
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input
+                                            type="text"
+                                            id="case-quantity"
+                                            class="form-control text-center"
+                                            value="0"
+                                        />
+                                        <button
+                                            class="btn btn-default"
+                                            id="case-increase"
+                                            onclick="productCountHandler('case',true)"
+                                        >
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <h5 id="case-price">$ 00</h5>
+                                    <img
+                                        onclick="removeItem('case-cart')"
+                                        src="images/remove.png"
+                                        alt=""
+                                        class="remove-item"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cart-item">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>Subtotal:</h5>
+                                    <h5>Tax:</h5>
+                                    <h5>Total:</h5>
+                                </div>
+
+                                <div class="col-md-4 status">
+                                    <h5 id="subtotal">$ 0</h5>
+                                    <h5 id="tax-amount">$ 0</h5>
+                                    <h5 id="total">$ 00</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 pt-4 pb-4">
+                            <button
+                                onclick="submitItem('full-cart')"
+                                type="button"
+                                id="check-out"
+                                class="btn btn-success check-out"
+                            >
+                                Check Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+            function productCountHandler(product, isIncrease, price) {
+                const productCount = document.getElementById(
+                    product + '-quantity'
+                );
+
+                const currentQuantity = parseInt(productCount.value);
+                let newQuantity = currentQuantity;
+                if (isIncrease == true) {
+                    newQuantity = currentQuantity + 1;
+                } else if (isIncrease == false && currentQuantity > 0) {
+                    newQuantity = currentQuantity - 1;
+                }
+
+                productCount.value = newQuantity;
+
+                let productPrice = 0;
+                if (product == 'phone') {
+                    productPrice = newQuantity * 1219;
+                } else if (product == 'case') {
+                    productPrice = newQuantity * 59;
+                }
+                document.getElementById(product + '-price').innerText =
+                    '$ ' + productPrice;
+                calculateTotal();
+            }
+            function calculateTotal() {
+                const phoneCount = getInputValue('phone');
+
+                const caseCount = getInputValue('case');
+
+                const subTotal = phoneCount * 1219 + caseCount * 59;
+                document.getElementById('subtotal').innerText = '$' + subTotal;
+
+                const tax = subTotal / 10;
+                document.getElementById('tax-amount').innerText = '$' + tax;
+
+                const grandTotal = subTotal + tax;
+                document.getElementById('total').innerText = '$' + grandTotal;
+            }
+
+            function getInputValue(product) {
+                const productInput = document.getElementById(
+                    product + '-quantity'
+                );
+                const productCount = parseInt(productInput.value);
+                return productCount;
+            }
+
+            function removeItem(item) {
+                document.getElementById(item).innerHTML =
+                    'Need the item back? Then Refresh.';
+            }
+            function submitItem(item) {
+                const submit = document.getElementById(item);
+                submit.innerHTML = 'Thank You. We start working on It. ';
+                submit.style.fontSize = '50px';
+                submit.style.textAlign = 'center';
+                submit.style.color = 'green';
+            }
+        </script>
+    </body>
+</html>
